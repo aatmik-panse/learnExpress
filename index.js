@@ -55,17 +55,32 @@ app.put("/contact", (req, res) => {
   console.log(req.body);
 });
 
-app.put("/admin", (req, res) => {
+// app.put("/admin/:id", (req, res) => {
+//   console.log(req.body);
+//   let id = req.params.id;
+//   let singleAdmin = admin.filter((admin) => admin.id == id);
+//   if (!singleAdmin) return res.status(404).send("Admin not found");
+//   for (let i = 0; i < req.body.length; i++) {
+//     singleAdmin[0][i] = req.body[i];
+//   }
+//   admin = singleAdmin;
+//   res.send(admin);
+// });
+
+app.put("/admin/:id", (req, res) => {
   console.log(req.body);
-  let singleAdmin = {
-    id: req.body.id,
-    name: req.body.name,
-    password: req.body.password,
-    username: req.body.username,
-  };
-  let index = admin.findIndex((admin) => admin.id == req.body.id);
-  admin[index] = singleAdmin;
-  res.send(admin);
+  const { id } = req.params;
+  const index = admin.findIndex((a) => a.id === parseInt(id));
+  console.log(index);
+
+  if (index !== -1) {
+    admin[index].name = req.body.name || admin[index].name;
+    admin[index].password = req.body.password || admin[index].password;
+    admin[index].username = req.body.username || admin[index].username;
+    res.send(admin[index]);
+  } else {
+    res.status(404).send({ message: "Admin not found" });
+  }
 });
 
 app.post("/admin", (req, res) => {
