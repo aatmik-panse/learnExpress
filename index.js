@@ -1,9 +1,12 @@
 const express = require("express");
 const fs = require("fs");
+var log4js = require("log4js");
 
 const file = fs.readFileSync("./contact.json");
 
 const app = express();
+
+app.use(logger);
 
 app.use(express.json());
 
@@ -101,3 +104,23 @@ app.delete("/admin/:id", (req, res) => {
   admin = singleAdmin;
   res.send(admin);
 });
+
+function logger(req, res, next) {
+  console.log("logger");
+  console.log(req.body);
+  console.log(req.url);
+  console.log(req.method);
+  console.log(req.user);
+  console.log(req.ip);
+  console.log(req.hostname);
+  console.log(req.path);
+  console.log(req.protocol);
+  console.log(req.secure);
+  console.log(req.subdomains);
+  console.log(req.xhr);
+  console.log(req.headers);
+  // console.log(req.)
+  next();
+}
+// TODO : Read from json and write to json
+// TODO : Add logger library
