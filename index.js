@@ -63,7 +63,8 @@ app.put("/admin", (req, res) => {
     password: req.body.password,
     username: req.body.username,
   };
-  admin.push(singleAdmin);
+  let index = admin.findIndex((admin) => admin.id == req.body.id);
+  admin[index] = singleAdmin;
   res.send(admin);
 });
 
