@@ -55,6 +55,18 @@ app.put("/contact", (req, res) => {
   console.log(req.body);
 });
 
+app.put("/admin", (req, res) => {
+  console.log(req.body);
+  let singleAdmin = {
+    id: req.body.id,
+    name: req.body.name,
+    password: req.body.password,
+    username: req.body.username,
+  };
+  admin.push(singleAdmin);
+  res.send(admin);
+});
+
 app.post("/admin", (req, res) => {
   console.log(req.body);
   let singleAdmin = {
@@ -67,14 +79,9 @@ app.post("/admin", (req, res) => {
   res.send(admin);
 });
 
-app.put("/admin", (req, res) => {
-  console.log(req.body);
-  let singleAdmin = {
-    id: req.body.id,
-    name: req.body.name,
-    password: req.body.password,
-    username: req.body.username,
-  };
-  admin.push(singleAdmin);
+app.delete("/admin/:id", (req, res) => {
+  let id = req.params.id;
+  let singleAdmin = admin.filter((admin) => admin.id != id);
+  admin = singleAdmin;
   res.send(admin);
 });
