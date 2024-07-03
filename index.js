@@ -4,7 +4,7 @@ const pino = require("pino-http")();
 
 const app = express();
 
-const file = fs.readFileSync("./contact.json");
+let contactData = fs.readFileSync("./contact.json", "utf-8");
 
 app.use(pino);
 app.use(express.json());
@@ -30,31 +30,58 @@ let admin = [
   },
 ];
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
-app.get("/about", (req, res) => {
-  res.send("About Page");
-});
-app.get("/admin", (req, res) => {
-  res.send(admin);
-});
-app.get("/contact", (req, res) => {
-  res.send(JSON.parse(file));
-  console.log(JSON.parse(file));
-});
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
-app.post("/contact", (req, res) => {
-  res.send("Contact Page");
-  console.log(req.body);
+app.get("/", (req, res) => {
+  res.send("Hello World");
 });
 
-app.put("/contact", (req, res) => {
-  res.send("Contact Page");
+app.get("/about", (req, res) => {
+  res.send("About Page");
+});
+
+app.get("/admin", (req, res) => {
+  res.send(admin);
+});
+
+app.get("/contact", (req, res) => {
+  res.send(JSON.parse(contactData));
+  console.log(JSON.parse(contactData));
+});
+
+app.post("/contact", (req, res) => {
   console.log(req.body);
+  let newContact = {
+    id: JSON.parse(contactData).length + 1,
+    name: req.body.name,
+    email: req.body.email,
+  };
+  fs.writeFileSync(
+    "./contact.json",
+    JSON.stringify([...JSON.parse(contactData), newContact])
+  );
+  res.send(JSON.parse(contactData));
+});
+
+app.put("/contact/:id", (req, res) => {
+  console.log(req.body);
+  const id = req.params.id;
+  contactData = JSON.parse(contactData);
+  const index = contactData.findIndex((a) => a.id == id);
+  console.log(contactData);
+  console.log(id);
+  if (index !== -1) {
+    contactData[index].name = req.body.name || contactData[index].name;
+    contactData[index].email = req.body.email || contactData[index].email;
+
+    fs.writeFileSync("./contact.json", JSON.stringify(contactData));
+
+    res.send(contactData);
+  } else {
+    res.status(404).send({ message: "Contact not found" });
+  }
 });
 
 // app.put("/admin/:id", (req, res) => {
@@ -105,4 +132,5 @@ app.delete("/admin/:id", (req, res) => {
 });
 
 // TODO : Read from json and write to json
+
 // TODO : Add logger library DONE .. Using Pino
