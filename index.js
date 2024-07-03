@@ -1,13 +1,12 @@
 const express = require("express");
 const fs = require("fs");
-var log4js = require("log4js");
-
-const file = fs.readFileSync("./contact.json");
+const pino = require("pino-http")();
 
 const app = express();
 
-app.use(logger);
+const file = fs.readFileSync("./contact.json");
 
+app.use(pino);
 app.use(express.json());
 
 let admin = [
@@ -105,22 +104,5 @@ app.delete("/admin/:id", (req, res) => {
   res.send(admin);
 });
 
-function logger(req, res, next) {
-  console.log("logger");
-  console.log(req.body);
-  console.log(req.url);
-  console.log(req.method);
-  console.log(req.user);
-  console.log(req.ip);
-  console.log(req.hostname);
-  console.log(req.path);
-  console.log(req.protocol);
-  console.log(req.secure);
-  console.log(req.subdomains);
-  console.log(req.xhr);
-  console.log(req.headers);
-  // console.log(req.)
-  next();
-}
 // TODO : Read from json and write to json
-// TODO : Add logger library
+// TODO : Add logger library DONE .. Using Pino
